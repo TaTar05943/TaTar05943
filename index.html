@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บริการเช่ารถทั่วจังหวัดฉะเชิงเทรา</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Custom CSS  */
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-info">
+    <div class="container">
+      <a class="navbar-brand" href="#">Areya QA</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">หน้าแรก</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">เกี่ยวกับเรา</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">บริการ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">ติดต่อ</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="jumbotron text-center">
+    <div class="container">
+      <h1 class="display-6">บริการเช่ารถ ฉะเชิงเทรา</h1>
+      <p class="lead">อารียาบริการทุกระดับประทับใจ</p>
+      <a href="#" class="btn btn-primary btn-lg">ดูรถทั้งหมด</a>
+    </div>
+  </section>
+
+  <section class="container my-5">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="searchInput" placeholder="ค้นหารถ">
+      </div>
+      <div class="col-md-4">
+        <select class="form-select" id="typeFilter">
+          <option value="">ประเภทรถ</option>
+          <option value="รถยนต์">รถยนต์</option>
+          <option value="รถตู้">รถตู้</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="priceRange" class="form-label">ราคาเช่า (บาท/วัน)</label>
+        <input type="range" class="form-range" min="0" max="5000" step="100" id="priceRange">
+        <span id="priceValue">0</span>
+      </div>
+    </div>
+
+    <div class="row" id="carList">
+    </div>
+  </section>
+
+  <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bookingModalLabel">แบบฟอร์มจองรถ</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="bookingForm">
+            <div class="mb-3">
+              <label for="name" class="col-form-label">ชื่อ-นามสกุล:</label>
+              <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="col-form-label">เบอร์โทรศัพท์:</label>
+              <input type="tel" class="form-control" id="phone" required>
+            </div>
+            <div class="mb-3">
+              <label for="rentDate" class="col-form-label">วันที่เช่า:</label>
+              <input type="date" class="form-control" id="rentDate" required>
+            </div>
+            <div class="mb-3">
+              <label for="returnDate" class="col-form-label">วันที่คืน:</label>
+              <input type="date" class="form-control" id="returnDate" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+          <button type="button" class="btn btn-success" id="confirmBooking">ยืนยันการจอง</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-light text-center py-3">
+    <div class="container">
+      <p>&copy; 2024 Areya Co.,Ltd</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const cars = [
+      {
+        name: "Toyota Alphard",
+        type: "รถตู้",
+        image: "https://v4i.rweb-images.com/www.apttrans.co.th/images/content/crop-1642220790597.png",
+        price: 7800,
+        details: "รถยนต์ขนาดเล็ก ประหยัดน้ำมัน",
+      },
+      {
+        name: "Honda Civic",
+        type: "รถยนต์",
+        image: "https://autolifethailand.tv/wp-content/uploads/2024/01/civic_minorchange_2024_001.jpg",
+        price: 1200,
+        details: "รถยนต์ขนาดกลาง ขับขี่สะดวกสบาย",
+      },
+      {
+        name: "Toyota Hiace",
+        type: "รถตู้",
+        image: "https://www.toyota.co.th/media/product/series/colors/v/hiace/187/374e1241666178490df69a1c93069e59ec396085aaff8c88bb74743a51617324.webp",
+        price: 2500,
+        details: "รถตู้ขนาดใหญ่ นั่งได้ 12 คน",
+      },
+
+      {
+        name: "Toyota Hiace",
+        type: "รถตู้",
+        image: "https://www.toyota.co.th/media/product/series/colors/v/hiace/187/374e1241666178490df69a1c93069e59ec396085aaff8c88bb74743a51617324.webp",
+        price: 2500,
+        details: "รถตู้ขนาดใหญ่ นั่งได้ 12 คน",
+      },
+
+      {
+        name: "Premium Van",
+        type: "รถตู้",
+        image: "https://magicfleet.net/wp-content/uploads/2022/08/PV1-1024x683.png",
+        price: 3000,
+        details: "รถตู้ขนาดใหญ่ นั่งได้ 12 คน",
+      },
+
+      {
+        name: "Toyota Commuter",
+        type: "รถตู้",
+        image: "https://cf.autodeft2.pw/uploads/images/2017/Toyota/Toyota%20Commuter/toyota-hiace-commuter-2014-01.jpg",
+        price: 500,
+        details: "รถตู้ขนาดใหญ่ นั่งได้ 12 คน",
+      },
+      // ... เพิ่มข้อมูลรถตู้และรถอื่นๆ ...
+    ];
+
+    const carList = document.getElementById("carList");
+    const searchInput = document.getElementById("searchInput");
+    const typeFilter = document.getElementById("typeFilter");
+    const priceRange = document.getElementById("priceRange");
+    const priceValue = document.getElementById("priceValue");
+    const bookingModal = document.getElementById("bookingModal");
+    const bookingForm = document.getElementById("bookingForm");
+    const confirmBooking = document.getElementById("confirmBooking");
+
+    function displayCars(cars) {
+      carList.innerHTML = "";
+      cars.forEach((car) => {
+        const carElement = `
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="${car.image}" class="card-img-top" alt="${car.name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${car.name}</h5>
+                        <p class="card-text">${car.details}</p>
+                        <p class="card-text">ประเภท: ${car.type}</p>
+                        <p class="card-text">ราคา: ${car.price} บาท/วัน</p>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal" data-car-name="${car.name}">จอง</button>
+                    </div>
+                </div>
+            </div>
+          `;
+        carList.innerHTML += carElement;
+      });
+    }
+
+    function filterCars() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedType = typeFilter.value;
+      const maxPrice = parseInt(priceRange.value, 10);
+
+      const filteredCars = cars.filter((car) => {
+        const matchesSearch = car.name.toLowerCase().includes(searchTerm);
+        const matchesType = selectedType === "" || car.type === selectedType;
+        const matchesPrice = car.price <= maxPrice;
+        return matchesSearch && matchesType && matchesPrice;
+      });
+
+      displayCars(filteredCars);
+    }
+
+    searchInput.addEventListener("input", filterCars);
+    typeFilter.addEventListener("change", filterCars);
+    priceRange.addEventListener("input", () => {
+      priceValue.textContent = priceRange.value;
+      filterCars();
+    });
+
+    bookingModal.addEventListener("show.bs.modal", (event) => {
+      const button = event.relatedTarget;
+      const carName = button.getAttribute("data-car-name");
+      const modalTitle = bookingModal.querySelector(".modal-title");
+      modalTitle.textContent = `แบบฟอร์มจองรถ ${carName}`;
+    });
+
+    confirmBooking.addEventListener("click", () => {
+      const formData = new FormData(bookingForm);
+      const bookingData = {
+        carName: bookingModal.querySelector(".modal-title").textContent.replace("แบบฟอร์มจองรถ ", ""),
+        name: formData.get("name"),
+        phone: formData.get("phone"),
+        rentDate: formData.get("rentDate"),
+        returnDate: formData.get("returnDate"),
+      };
+      console.log("ข้อมูลการจอง:", bookingData);
+      // TODO: ส่งข้อมูลการจองไปยัง Server
+      bookingModal.hide();
+    });
+
+    // แสดงรถทั้งหมดตอนเริ่มต้น
+    displayCars(cars);
+  </script>
+</body>
+
+</html>
